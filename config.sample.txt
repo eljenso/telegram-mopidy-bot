@@ -1,0 +1,6 @@
+[main]
+botToken: 987654321:abcdefghijklmnopqrstuvwxyz
+
+[allowedChats]
+tim: 123456789
+struppi: 45975416
