@@ -1,5 +1,6 @@
 before_script:
-  - docker stop telegram-mopidy-bot; docker rm telegram-mopidy-bot || true
+  - docker stop telegram-mopidy-bot || true
+  - docker rm telegram-mopidy-bot || true
 
 humpink:
   script:
@@ -9,5 +10,3 @@ humpink:
   tags:
   - humpink
   - shell
-  only:
-  - tags
