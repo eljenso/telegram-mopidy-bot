@@ -1,0 +1,13 @@
+before_script:
+  - docker stop telegram-mopidy-bot; docker rm telegram-mopidy-bot || true
+
+humpink:
+  script:
+  - docker build -t telegram-mopidy-bot .
+  - docker run -d -v /etc/localtime:/etc/localtime --name telegram-mopidy-bot telegram-mopidy-bot
+  type: deploy
+  tags:
+  - humpink
+  - shell
+  only:
+  - tags
