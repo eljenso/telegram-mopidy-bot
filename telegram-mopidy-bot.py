@@ -34,7 +34,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def readConfig():
+def loadConfig():
     global botToken
     global allowedChats
     global host
@@ -72,25 +72,18 @@ def spotifyLinkHandler(bot, update):
 def start(bot, update):
     bot.sendMessage(update.message.chat_id, text='Hi!')
 
-
 def help(bot, update):
     bot.sendMessage(update.message.chat_id, text='Help!')
-
-
-def message(bot, update):
-    if update.message.chat_id in allowedChats:
-        bot.sendMessage(update.message.chat_id, text=update.message.text)
-    else:
-        logger.warn('Received message from unauthorized chat ID %s' % (update.message.chat_id))
 
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
 def unknown(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text="Sorry, I didn't understand that command.")
 
+
 def main():
     # Load config
-    readConfig()
+    loadConfig()
 
     # Create the EventHandler and pass it your bot's token.
     try:
