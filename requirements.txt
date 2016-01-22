@@ -1,1 +1,2 @@
 python-telegram-bot >= 3.2.0
+mopidy >= 1.1.2
