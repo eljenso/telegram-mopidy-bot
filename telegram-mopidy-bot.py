@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-# Simple Bot to reply to Telegram messages
-# This program is dedicated to the public domain under the CC0 license.
 
 """
 This Bot uses the Updater class to handle the bot.
@@ -10,29 +7,28 @@ This Bot uses the Updater class to handle the bot.
 First, a few handler functions are defined. Then, those functions are passed to
 the Dispatcher and registered at their respective places.
 Then, the bot is started and runs until we press Ctrl-C on the command line.
-
-Usage:
-Basic Echobot example, repeats messages.
-Press Ctrl-C on the command line or send a signal to the process to stop the
-bot.
 """
 
 import telegram
-from telegram import Updater
 import logging
 import configparser
+import re
 from os import path
+
+import lib.mopidy as mopidy
+
 
 configpath = 'config.txt'
 
 botToken = ''
 allowedChats = []
+host = ''
 
 
 # Enable logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
+    level=logging.DEBUG
 )
 
 logger = logging.getLogger(__name__)
@@ -47,6 +43,7 @@ def readConfig():
         return
     config.read(configpath)
     botToken = config.get('main', 'botToken')
+    host = config.get('main', 'host')
     chats = config.items('allowedChats')
     for chat in chats:
         try:
@@ -56,8 +53,18 @@ def readConfig():
             raise
 
 
-def spotifyLinkHandler(bot, link):
-    bot.sendMessage(chat_id=update.message.chat_id, text="Great, will play this song for you.")
+def spotifyLinkHandler(bot, update):
+    link = update.message.text
+    logger.info(link)
+    pattern = re.compile('/track/')
+    link_split = pattern.split(link)
+    logger.info(link_split)
+    if len(link_split) == 2:
+        mopidy.queue(host, 'spotify:track:%s' % (link_split[1]))
+        bot.sendMessage(chat_id=update.message.chat_id, text="Great, playing the song for you.")
+    else:
+        bot.sendMessage(chat_id=update.message.chat_id, text="Please post a track link.")
+
 
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
@@ -86,7 +93,7 @@ def main():
 
     # Create the EventHandler and pass it your bot's token.
     try:
-        updater = Updater(token=botToken)
+        updater = telegram.Updater(token=botToken)
     except telegram.error.TelegramError as e:
         logger.error('Could not init telegram bot. Is the bot token missing in the config?')
         raise
@@ -101,7 +108,7 @@ def main():
     dp.addUnknownTelegramCommandHandler(unknown)
 
     # on noncommand i.e message - echo the message on Telegram
-    dp.addTelegramMessageHandler(message)
+    dp.addTelegramRegexHandler("^http[s]?://.*spotify\.com", spotifyLinkHandler)
 
     # log all errors
     dp.addErrorHandler(error)

@@ -1,5 +1,6 @@
 [main]
 botToken: 987654321:abcdefghijklmnopqrstuvwxyz
+host: localhost:6680
 
 [allowedChats]
 tim: 123456789
