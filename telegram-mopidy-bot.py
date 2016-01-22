@@ -28,7 +28,7 @@ host = ''
 # Enable logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.DEBUG
+    level=logging.WARNING
 )
 
 logger = logging.getLogger(__name__)
@@ -37,6 +37,7 @@ logger = logging.getLogger(__name__)
 def readConfig():
     global botToken
     global allowedChats
+    global host
     config = configparser.RawConfigParser()
     if path.exists(configpath)==False:
         logger.error('"%s" does not exist.' % (configpath))
