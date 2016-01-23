@@ -13,6 +13,7 @@ import telegram
 import logging
 import configparser
 import re
+import subprocess
 from os import path
 
 import lib.mopidy as mopidy
@@ -28,7 +29,7 @@ host = ''
 # Enable logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.WARNING
+    level=logging.INFO
 )
 
 logger = logging.getLogger(__name__)
@@ -44,7 +45,11 @@ def loadConfig():
         return
     config.read(configpath)
     botToken = config.get('main', 'botToken')
-    host = config.get('main', 'host')
+    try:
+        host = config.get('main', 'host')
+    except Exception as e:
+        host = subprocess.check_output("ip route show | awk '/default/ {print $3}'", shell=True).decode().replace("\n", ":6680")
+
     chats = config.items('allowedChats')
     for chat in chats:
         try:
