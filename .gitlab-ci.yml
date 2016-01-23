@@ -6,7 +6,7 @@ humpink:
   script:
   - cp /tmp/mopidy-bot.txt ./config.txt
   - docker build -t telegram-mopidy-bot .
-  - docker run -d -v /etc/localtime:/etc/localtime --name telegram-mopidy-bot telegram-mopidy-bot
+  - docker run -d --name telegram-mopidy-bot telegram-mopidy-bot
   type: deploy
   tags:
   - humpink
