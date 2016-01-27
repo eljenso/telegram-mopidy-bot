@@ -4,7 +4,7 @@ before_script:
 
 humpink:
   script:
-  - cp /tmp/mopidy-bot.txt ./config.txt
+  - cp ~/mopidy-bot.config.txt ./config.txt
   - docker build -t telegram-mopidy-bot .
   - docker run -d --name telegram-mopidy-bot telegram-mopidy-bot
   type: deploy
