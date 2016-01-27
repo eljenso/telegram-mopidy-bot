@@ -62,14 +62,25 @@ def loadConfig():
 def spotifyLinkHandler(bot, update):
     link = update.message.text
     logger.info(link)
-    pattern = re.compile('/track/')
-    link_split = pattern.split(link)
+
+    track_pattern = '/track/'
+    album_pattern = '/album/'
+
+    link_split = track_pattern.split(link)
     logger.info(link_split)
-    if len(link_split) == 2:
-        mopidy.queue(host, 'spotify:track:%s' % (link_split[1]))
+    if track_pattern in link:
+        pattern = re.compile(track_pattern)
+        split = pattern.split(link)
+        mopidy.queue(host, 'spotify:track:%s' % (split[1]))
         bot.sendMessage(chat_id=update.message.chat_id, text="Great, playing the song for you.")
+    elif album_pattern in link:
+        pattern = re.compile(album_pattern)
+        split = pattern.split(link)
+        mopidy.queue(host, 'spotify:album:%s' % (split[1]))
+        bot.sendMessage(chat_id=update.message.chat_id, text="Great, playing the album for you.")
     else:
         bot.sendMessage(chat_id=update.message.chat_id, text="Please post a track link.")
+
 
 
 # Define a few command handlers. These usually take the two arguments bot and
